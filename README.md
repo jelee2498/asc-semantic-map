@@ -130,6 +130,13 @@ scheduled after the pipelines above.
   semantic annotations, the 85-feature matrices and the per-subject gaze-weighted
   regressors built from them **are** published.
 
+## Licence
+
+Analysis code: MIT (see `LICENSE`). The atlases and surfaces vendored under
+`templates/` are third-party and keep their own terms; see
+`templates/MANIFEST.md`. Derived data is deposited separately and is subject to
+the Healthy Brain Network and CMI Biobank access terms, not to the MIT licence.
+
 ## Citation
 
 Citation details will be added on publication.

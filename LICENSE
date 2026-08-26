@@ -1,0 +1,44 @@
+MIT License
+
+Copyright (c) 2026 Jong-Eun Lee and the authors of Lee et al.,
+"How do children with autism perceive the external world?:
+Cortex-wide mapping of visual semantic representation"
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+The MIT licence above covers the analysis code in this repository.
+
+It does NOT cover the third-party atlases, surfaces and reference maps vendored
+under `templates/`, which are redistributed under their own terms:
+
+  - HCP-MMP parcellation and associated fsLR surfaces (Glasser et al.) —
+    HCP Open Access Data Use Terms
+  - Yeo 7/17-network parcellation (Yeo et al.)
+  - Gordon 17-network parcellation, via cbig_network_correspondence
+  - fsLR medial-wall masks, from the neuromaps data distribution
+  - Multi-task dimensionality map (Ito & Murray)
+
+See `templates/MANIFEST.md` for provenance. Confirm each upstream licence
+before redistributing them further.
+
+Derived data associated with this repository is deposited separately and is
+subject to the Healthy Brain Network and Child Mind Institute Biobank data
+access terms, not to this licence.
