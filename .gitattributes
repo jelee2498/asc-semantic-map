@@ -1,0 +1,21 @@
+# Default: let git normalise line endings in source files.
+* text=auto
+
+# Vendored data and derived artefacts must round-trip byte-identically.
+# templates/SHA256SUMS.txt verifies the vendored atlases, and end-of-line
+# normalisation on checkout would silently break that verification.
+templates/**   -text
+*.gii          -text
+*.nii          -text
+*.npy          -text
+*.npz          -text
+*.mat          -text
+*.xlsx         -text
+*.pkl          -text
+*.pickle       -text
+*.csv          -text
+
+# Keep shell and PBS scripts LF so they run on the cluster regardless of
+# where they were checked out.
+*.sh   text eol=lf
+*.pbs  text eol=lf

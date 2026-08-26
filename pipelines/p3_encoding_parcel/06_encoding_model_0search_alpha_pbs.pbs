@@ -1,0 +1,82 @@
+#!/bin/bash
+#PBS -q workq
+#PBS -l nodes=1:ppn=1
+#PBS -j oe
+#PBS -V
+#PBS -N search_alpha
+#PBS -J 1-246
+
+##############################################################################
+# PBS Array Job: Encoding Model Ridge Parameter Search
+##############################################################################
+#
+# Purpose:
+#   Submits parallel jobs to perform ridge regression parameter search
+#   for encoding models with noise ceiling correction.
+#
+# Usage:
+#   qsub 06_encoding_model_0search_alpha_pbs.pbs
+#
+# Parameters to modify:
+#   - HX_DOCU: Set to 'True' or 'False'
+#   - PBS -J: Adjust range based on number of subjects in id_list file
+#
+# Notes:
+#   - Each array job processes one subject
+#   - Subject IDs are read from id_list_inc_byhx_docu-${HX_DOCU}.txt
+#   - Performs grid search over 6 parameter combinations (gaze weights)
+#   - Outputs per-fold and fold-averaged results
+#
+# To fix errors caused by Windows-style line endings, run:
+#   1) Open the file: vim your_script_name.sh
+#   2) Type :set ff=unix and press Enter.
+#   3) Type :wq and press Enter to save and quit.
+##############################################################################
+
+# Basic settings
+# Project root.  Set ASC_PROJECT_ROOT to the value of roots.project in
+# config/paths.yml; the original hard-coded lab mount point is not distributed.
+readonly BASEDIR="${ASC_PROJECT_ROOT:?set ASC_PROJECT_ROOT to the project root (see config/paths.yml)}"
+readonly CODEDIR=${BASEDIR}/1_code/99_main
+readonly PIPELINE=99_main
+readonly TASK=06_encoding_model
+
+# User-configurable parameters
+HX_DOCU=True    # ASD by-history documentation filter: 'True'(N=246) or 'False'(N=267)
+
+# Job execution
+SCRIPT=${CODEDIR}/06_encoding_model_0search_alpha_sub.py
+
+# Get subject ID from array index
+JOB_NO=$PBS_ARRAY_INDEX
+SUB_ID=`sed -n "${JOB_NO} p" ${BASEDIR}/2_pipeline/${PIPELINE}/${TASK}/save/id_list_inc_byhx_docu-${HX_DOCU}.txt`
+
+# Print job information
+echo "========================================="
+echo "PBS Array Job: Encoding Model Parameter Search"
+echo "========================================="
+echo "Job ID: $PBS_JOBID"
+echo "Array Index: $PBS_ARRAY_INDEX"
+echo "Subject ID: $SUB_ID"
+echo "HX Documentation Filter: $HX_DOCU"
+echo "Node: $(hostname)"
+echo "Start time: $(date)"
+echo "========================================="
+echo ""
+
+# Run Python script
+runprogram() {
+    python3 ${SCRIPT} ${SUB_ID} ${HX_DOCU}
+}
+
+runprogram
+
+# Print completion message
+EXIT_CODE=$?
+echo ""
+echo "========================================="
+echo "Job completed at: $(date)"
+echo "Exit code: $EXIT_CODE"
+echo "========================================="
+
+exit $EXIT_CODE

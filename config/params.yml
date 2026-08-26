@@ -1,0 +1,116 @@
+# The manuscript configuration.
+#
+# These values ARE the published analysis.  They are not tuning knobs: every
+# script in 99_main encodes them into its output directory path, so a changed
+# value does not raise an error - it silently writes to a different directory and
+# reads back nothing.  A "reproduction" that quietly produced no output has been
+# the most common failure mode in this codebase.
+#
+# Values were read out of the CONFIG blocks of 07_pca.py, 09_dimensionality.py,
+# 10_behavior_sharp.py, 11_sem_zscore_0save_raw.py / _3analysis.R and
+# 12_heterogeneity_0subtype.py, and cross-checked against the directory names
+# actually present under 2_pipeline/99_main/.
+
+cohort:
+  fd_thres: 0.5           # mean framewise displacement cut-off, mm
+  hx_docu: "True"         # keep by-history ASC only with supporting documentation
+  # Published Ns: 108 TD / 138 ASC (Despicable Me, HBN).
+
+acquisition:
+  movie: "DM"             # Despicable Me
+  n_trs: 750
+  tr: 0.8
+  start_ignore_trs: 5
+  end_ignore_trs: 5
+  tr_delays: [3, 5, 7, 9] # hemodynamic delays, TRs -> 2.4/4.0/5.6/7.2 s
+
+denoising:
+  conf_option: "default+me"   # FD + global signal + linear trend + motion energy
+
+parcellation:
+  atlas: "mmp"            # HCP-MMP, 360 cortical parcels
+  resolution: "32k"       # fsLR-32k; 64,984 vertices, 59,412 non-medial-wall
+
+features:
+  bias_weight: 0.9        # baseline gaze weight (peripheral vision floor)
+  verb_weight: 1.0        # scalar weight for action features (no polygon mask)
+  reg_wordnet: true       # include WordNet superordinate categories -> 85 features
+  weight_across_delays: "Avg"
+  weight_add_superordinate: true
+
+encoding:
+  chunk_option: 9         # 9 chunks -> 3 cross-validation folds
+  srm_option: 0           # parcel-level: no SRM
+  srm_option_dim: 50      # vertex-level: DetSRM, k=50
+  srm_type: "det"
+  seed: 0
+  # Differs by branch - a frequent source of silent path mismatches:
+  enc_single_alpha_semantic: true    # P4 reads .../s_alpha-True/
+  enc_single_alpha_dim: false        # P5 reads .../s_alpha-False/
+
+performance_mask:
+  perf_method: "fdr"
+  perf_alpha: 0.01        # -> mask_fdr-0.01.npy, 291 of 360 parcels (80.8%)
+
+semantic_axis:            # P4
+  pca_template: "Whole"
+  pca_only_sign: true
+  pca_iter: 10
+  comp_no: 1              # PC1; Supp. Fig. 4/5 rerun this with 2 and 3
+  glm_alpha: 0.025        # two-tailed -> FDR < 0.05
+  include_expanded_networks: false   # excludes Precuneus and Inferior Frontal &
+                                     # Medial Prefrontal from the pathway analysis
+
+dimensionality:           # P5
+  dim_metric: "cov"
+  within_perf_mask: true
+  glm_alpha: 0.025
+  overlap_alpha: 0.1
+
+spatial_nulls:            # P0, consumed by P4/P5
+  seed_surro: 0
+  spin_n_rot: 2000
+  es_n_surr: 2000
+  es_num_modes: 200
+  es_surface: "midthickness"
+  es_n_jobs: 1            # MUST stay 1.  eigenstrapping's own seed= argument is
+                          # inert; reproducibility comes from seeding NumPy's
+                          # global RNG, which is process-local and therefore lost
+                          # under joblib parallelism.  See docs/STAGE_A_NOTES.md.
+
+prediction:               # P6 - shipped, not verified
+  n_rep: 100
+  n_cv: 20
+  n_perm: 1000
+  sharp_K: 10
+  sharp_J: 30
+  one_sided_combined: true
+  behav_items: [SRS_AWR_T, SRS_COG_T, SRS_COM_T, SRS_MOT_T, SRS_RRB_T]
+
+normative_sem:            # P7
+  screen: true            # age-based screening; drops 13 late-adolescent subjects
+  sig_overlap: false      # use the per-metric significance masks, not their overlap
+  # Path segment produced by the two flags above: screen-True_overlap-False
+  # Three other combinations exist on disk and are NOT the published analysis.
+  behav_items_srs: [SRS_AWR_T, SRS_COG_T, SRS_COM_T, SRS_MOT_T, SRS_RRB_T]
+  behav_items_nih: [NIH7_Card_P, NIH7_Flanker_P, NIH7_List_P, NIH7_Pattern_P]
+  # Published fit (Fig. 5): chi2 = 81.090, df = 52, chi2/df = 1.559,
+  #                         RMSEA = 0.0509, CFI = 0.9802, N = 216 (97 TD + 119 ASC)
+
+subtyping:                # P8
+  clustering_method: "kmeans"
+  normalize_profiles: true   # cluster on profile-normalized z-scores, not raw
+                             # severity.  State this in Methods - it changes what
+                             # the subtypes mean.
+  outlier_threshold: 1.645
+  # K-means determinism.  The original buried these in a function default
+  # (`random_state: int = 42`) rather than exposing them as analysis parameters,
+  # so the reproducibility of the 58/70 split was not visible from the config.
+  random_state: 42
+  n_init: 50
+  max_k: 5
+  manual_k: null            # null -> silhouette-optimal (k = 2 for the published run)
+  fdr_alpha: 0.05
+  # Published clustering: 128 ASC -> 58 (Subtype-1) / 70 (Subtype-2).
+  # The subtype SEM refits use 119 ASC (53 / 66): 9 subjects lack one or more of
+  # the 9 behavioural indicators and are dropped by complete-case filtering.

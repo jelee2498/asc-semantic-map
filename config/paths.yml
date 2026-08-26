@@ -1,0 +1,90 @@
+# Storage roots.
+#
+# Read by lib/project_config.py.  Edit `roots` for your machine; everything below
+# it is derived and should be left alone.
+#
+# The defaults reproduce the layout the published analyses were run on, so that
+# resolved paths match the original scripts exactly.  On that machine the roots
+# were bare drive letters (Windows) or mount points (Linux) with the project
+# under `<root>/jelee/02_asd_semantic_map`; here that whole prefix is folded into
+# `roots.project`, which is why no drive letter appears anywhere in the code.
+
+roots:
+  # Project root: the directory containing 0_data/, 1_code/, 2_pipeline/.
+  # Original: S:/jelee/02_asd_semantic_map  |  /MIPL/store7/jelee/02_asd_semantic_map
+  project: "S:/jelee/02_asd_semantic_map"
+
+  # Vendored atlases and surfaces.  Ships with this repository.
+  # Relative paths are resolved against the repository root.
+  # Original: an out-of-project shared directory, S:/jelee/template
+  templates: "./templates"
+
+  # Derived data downloaded from Figshare (docs/FIGSHARE_MANIFEST.md).
+  # The entry point for reproduction: encoding-model results, participation-ratio
+  # arrays, the spatial-null cache, and the phenotypic covariate table.
+  derivatives: "./derivatives"
+
+  # Generated figures, written as figures/<pipeline>/...  The original scripts
+  # wrote into the source tree (1_code/99_main/claude_figures/); keeping output
+  # out of the source tree means a run never dirties the code.
+  figures: "./figures"
+
+  # HBN phenotypic release (LORIS).  Needed only by P7 for the NIH Toolbox
+  # scores.  Access-controlled; leave null if you do not have it.
+  # Original: Q:/HBN  |  /MIPL/store9/HBN
+  hbn_phenotype: null
+
+  # Local HBN imaging mirror.  Needed only by the preprocessing stages, which are
+  # not distributed.  Leave null.
+  # Original: V:/  |  /MIPL/store6
+  hbn_mirror: null
+
+# --------------------------------------------------------------------------
+# Derived locations.  `{project}` is substituted from roots.project.
+# The directory names encode analysis parameters (see params.yml); downstream
+# scripts resolve them literally, so do not rename them.
+# --------------------------------------------------------------------------
+
+project:
+  raw:      "{project}/0_data/raw"
+  code:     "{project}/1_code/99_main"
+  pipeline: "{project}/2_pipeline/99_main"
+
+pipeline_tasks:
+  features:        "05_prepare_reg"          # P2
+  encoding_parcel: "06_encoding_model"       # P3
+  semantic_axis:   "07_pca"                  # P4
+  encoding_vertex: "08_encoding_model_vertex" # P5 upstream
+  dimensionality:  "09_dimensionality"       # P5
+  prediction:      "10_behavior_sharp"       # P6
+  normative_sem:   "11_sem_zscore"           # P7
+  subtyping:       "12_heterogeneity"        # P8
+
+# Shared cache for spin permutations and geometric eigenmodes.  Ship the
+# published cache to reproduce p_eigen exactly rather than only statistically;
+# see docs/STAGE_A_NOTES.md.
+spatial_nulls_cache: "{project}/2_pipeline/99_main/_spatial_nulls_cache"
+
+templates:
+  mmp_32k_dlabel:   "MMP/Q1-Q6_RelatedParcellation210.CorticalAreas_dil_Colors.32k_fs_LR.dlabel.nii"
+  mmp_10k_dlabel:   "MMP/10k_fs_LR/Q1-Q6_RelatedParcellation210.CorticalAreas_dil_Colors.10k_fs_LR.dlabel.nii"
+  medial_wall_32k:  "MMP/Human.MedialWall_Conte69.32k_fs_LR.dlabel.nii"
+  mmp_sections:     "MMP/ResultsRegions_ROI.dlabel.nii"
+  mmp_roi_table:    "MMP/HCP_cortical_subcortical_379.xlsx"
+  sphere_l:         "MMP/Q1-Q6_RelatedParcellation210.L.sphere.32k_fs_LR.surf.gii"
+  sphere_r:         "MMP/Q1-Q6_RelatedParcellation210.R.sphere.32k_fs_LR.surf.gii"
+  midthickness_l:   "MMP/Q1-Q6_RelatedParcellation210.L.midthickness_MSMAll_2_d41_WRN_DeDrift.32k_fs_LR.surf.gii"
+  midthickness_r:   "MMP/Q1-Q6_RelatedParcellation210.R.midthickness_MSMAll_2_d41_WRN_DeDrift.32k_fs_LR.surf.gii"
+  very_inflated_l:  "MMP/Q1-Q6_RelatedParcellation210.L.very_inflated_MSMAll_2_d41_WRN_DeDrift.32k_fs_LR.surf.gii"
+  very_inflated_r:  "MMP/Q1-Q6_RelatedParcellation210.R.very_inflated_MSMAll_2_d41_WRN_DeDrift.32k_fs_LR.surf.gii"
+  sulc:             "MMP/Q1-Q6_RelatedParcellation210.sulc_MSMAll_2_d41_WRN_DeDrift.32k_fs_LR.dscalar.nii"
+  brain_mask_32k_l: "neuromaps-data/atlases/fsLR/tpl-fsLR_den-32k_hemi-L_desc-nomedialwall_dparc.label.gii"
+  brain_mask_32k_r: "neuromaps-data/atlases/fsLR/tpl-fsLR_den-32k_hemi-R_desc-nomedialwall_dparc.label.gii"
+  brain_mask_10k_l: "neuromaps-data/atlases/fsLR/tpl-fsLR_den-10k_hemi-L_desc-nomedialwall_dparc.label.gii"
+  brain_mask_10k_r: "neuromaps-data/atlases/fsLR/tpl-fsLR_den-10k_hemi-R_desc-nomedialwall_dparc.label.gii"
+  # Loaded left-hemisphere-only and mirrored (np.r_[lh, lh]); rh files are unused.
+  yeo7:             "Yeo_JNeurophysiol11_FreeSurfer/32k_fs_LR/lh.Yeo2011_7Networks_order.label.gii"
+  yeo17:            "Yeo_JNeurophysiol11_FreeSurfer/32k_fs_LR/lh.Yeo2011_17Networks_order.label.gii"
+  eg17:             "WashU/EG17.mat"
+  # Ito & Murray multi-task dimensionality, the Fig. 3b comparison map.
+  multitask_dim:    "external/analysis1_parcel_cosine_dimensionality_groupavg.csv"

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GIFTI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://brainvis.wustl.edu/caret6/xml_schemas/GIFTI_Caret.xsd"
+       Version="1"
+       NumberOfDataArrays="1">
+   <MetaData>
+      <MD>
+         <Name><![CDATA[AnatomicalStructurePrimary]]></Name>
+         <Value><![CDATA[CortexLeft]]></Value>
+      </MD>
+      <MD>
+         <Name><![CDATA[ParentProvenance]]></Name>
+         <Value><![CDATA[/home/kyoungseobbyeon/neuromaps-data/atlases/fsLR/tpl-fsLR_den-10k_hemi-L_sphere.surf.gii:
+/local_raid1/01_software/workbench/bin_linux64/../exe_linux64/wb_command -surface-flip-lr /store4/ksbyeon/ETC/HCPpipelines-master/global/templates/standard_mesh_atlases/R.sphere.10k_fs_LR.surf.gii /store4/ksbyeon/ETC/HCPpipelines-master/global/templates/standard_mesh_atlases/L.sphere.10k_fs_LR.surf.gii
+
+/home/kyoungseobbyeon/neuromaps-data/atlases/fsLR/tpl-fsLR_den-10k_hemi-L_desc-vaavg_midthickness.shape.gii:
+/home/kyoungseobbyeon/workbench/bin_rh_linux64/../exe_rh_linux64/wb_command -surface-vertex-areas /home/kyoungseobbyeon/neuromaps-data/atlases/fsLR/tpl-fsLR_den-10k_hemi-L_midthickness.surf.gii /home/kyoungseobbyeon/neuromaps-data/atlases/fsLR/tpl-fsLR_den-10k_hemi-L_desc-vaavg_midthickness.shape.gii
+
+]]></Value>
+      </MD>
+      <MD>
+         <Name><![CDATA[ProgramProvenance]]></Name>
+         <Value><![CDATA[Connectome Workbench
+Type: Command Line Application
+Version: 1.4.2
+Qt Compiled Version: 5.7.0
+Qt Runtime Version: 5.7.0
+Commit: 092b7f2f7dfab0f9ea7cbb6c1db2e5dffd2c1045
+Commit Date: 2020-01-07 17:24:23 -0600
+Compiled with OpenMP: YES
+Compiler: g++ (/export/gcc-4.8.5/bin)
+Compiler Version: 4.8.5
+Compiled Debug: NO
+Operating System: Linux
+]]></Value>
+      </MD>
+      <MD>
+         <Name><![CDATA[Provenance]]></Name>
+         <Value><![CDATA[/home/kyoungseobbyeon/workbench/bin_rh_linux64/../exe_rh_linux64/wb_command -label-resample /home/kyoungseobbyeon/neuromaps-data/atlases/fsLR/tpl-fsLR_den-164k_hemi-L_desc-nomedialwall_dparc.label.gii /home/kyoungseobbyeon/neuromaps-data/atlases/fsLR/tpl-fsLR_den-164k_hemi-L_sphere.surf.gii /home/kyoungseobbyeon/neuromaps-data/atlases/fsLR/tpl-fsLR_den-10k_hemi-L_sphere.surf.gii ADAP_BARY_AREA /home/kyoungseobbyeon/neuromaps-data/atlases/fsLR/tpl-fsLR_den-10k_hemi-L_desc-nomedialwall_dparc.label.gii -area-metrics /home/kyoungseobbyeon/neuromaps-data/atlases/fsLR/tpl-fsLR_den-164k_hemi-L_desc-vaavg_midthickness.shape.gii /home/kyoungseobbyeon/neuromaps-data/atlases/fsLR/tpl-fsLR_den-10k_hemi-L_desc-vaavg_midthickness.shape.gii]]></Value>
+      </MD>
+      <MD>
+         <Name><![CDATA[WorkingDirectory]]></Name>
+         <Value><![CDATA[/home/kyoungseobbyeon]]></Value>
+      </MD>
+   </MetaData>
+   <LabelTable>
+      <Label Key="0" Red="1" Green="1" Blue="1" Alpha="0"><![CDATA[???]]></Label>
+   </LabelTable>
+<DataArray Intent="NIFTI_INTENT_LABEL"
+           DataType="NIFTI_TYPE_INT32"
+           ArrayIndexingOrder="RowMajorOrder"
+           Dimensionality="1"
+           Dim0="10242"
+           Encoding="GZipBase64Binary"
+           Endian="LittleEndian"
+           ExternalFileName=""
+           ExternalFileOffset="0">
+   <MetaData>
+      <MD>
+         <Name><![CDATA[Name]]></Name>
+         <Value><![CDATA[Atlas_Cortex_ROI]]></Value>
+      </MD>
+   </MetaData>
+   <Data>eJzt1UsOgzAMBcD0/pfuik0l2nxsp8A8aVYlfgHU8GqtvU60L799XleRnr1k+af7qcoTOiv77tST3VHxv8uaGzk7embkWRJ1NkXMWT0rV9bPntUz5/zompHvyc7vK+N6snuPXEsr6jiSPT+65yxZc1dm/8rOeT2pmrM6Y2X97NqZdb2Z6ei99oqJOjsAAAAAAAAAAAAAAAAAAAAAAAAAAJ7kV1bWzs7leqreaUVPdkfm/KzZFc8dGHNk9z4AAAAAAIBnO0tlV0ZnT65yT9kdvcmcPdoXlYyZIk9OxrfjX+245+rOHX136cnuqHwvAAAAABDpDQcCJJU=</Data>
+</DataArray>
+</GIFTI>

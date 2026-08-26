@@ -1,0 +1,4 @@
+# Generated figures. Tracked as a directory, not as content.
+*
+!.gitignore
+!README.md
