@@ -84,8 +84,8 @@ where PR increases.
 |---|---|
 | `sem_list_{td,asd}.npy`, `sig_regions_…npy` | P4 |
 | `cov_pr_{td,asd}.npy`, `cov_sig_mmp.npy` | P5 |
-| `mask_fdr-0.01.npy` | P3 (Figshare) |
-| `participants_df_deepmreye_inc_byhx.xlsx` | Figshare — SRS |
+| `mask_fdr-0.01.npy` | P3 (Zenodo) |
+| `participants_df_deepmreye_inc_byhx.xlsx` | per-subject tier, on request — SRS |
 | NIH Toolbox scores | HBN LORIS release (`roots.hbn_phenotype`) |
 | EG17 atlas | `templates/WashU/EG17.mat` |
 
@@ -145,9 +145,9 @@ where PR increases.
 ## Known issues
 
 - The NIH Toolbox scores come from the HBN LORIS release, not from
-  `participants_df`, so `roots.hbn_phenotype` must be set for step 2. Publishing
-  a small NIH table keyed by subject ID would remove that dependency —
-  see `docs/FIGSHARE_MANIFEST.md` §4.
+  `participants_df`, so `roots.hbn_phenotype` must be set for step 2. The
+  per-subject tier includes `nih_toolbox_scores.csv`, which removes that
+  dependency — see `docs/DERIVED_DATA_MANIFEST.md` §4.
 - The R scripts have no `--out-root`; they write beside their inputs. Step 3
   only *adds* files, so a re-run cannot damage existing results, but there is no
   scratch-run option as there is for P4/P5.

@@ -12,7 +12,7 @@ paths the originals used.
 | | Stage | Manuscript | Runnable | Status |
 |---|---|---|---|---|
 | P2 | `p2_features/` — gaze-informed feature construction | Fig. 1a–b, Supp. Fig. 2 | no | published for inspection |
-| P3 | `p3_encoding_parcel/` — encoding model, performance mask | Fig. 1b–d | no | published for inspection; **outputs on Figshare** |
+| P3 | `p3_encoding_parcel/` — encoding model, performance mask | Fig. 1b–d | no | published for inspection; **group outputs on Zenodo** |
 | P4 | `p4_semantic_axis/` — semantic axis (PCA) | Fig. 2, Supp. Fig. 3–5 | yes | **verified** — outputs byte-identical |
 | P5 | `p5_dimensionality/` — representational dimensionality | Fig. 3 | yes | **verified** — outputs byte-identical |
 | P6 | `p6_prediction/` — symptom prediction | Fig. 4 | yes | migrated; results cross-checked, not re-run |

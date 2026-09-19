@@ -10,8 +10,9 @@ these steps in detail — the Gaussian gaze kernel, the uncertainty scaling, the
 WordNet expansion — and the description should be checkable against the
 implementation.
 
-**Its outputs are published**, so the stage it feeds (P3) has everything it
-needs. See [Outputs](#outputs-consumed-downstream).
+**Its outputs are released** — publicly where they are group-level, on request
+to HBN DUA holders where they describe individual subjects — so the stage it
+feeds (P3) has everything it needs. See [Outputs](#outputs-consumed-downstream).
 
 Scripts are the working-tree originals with **one change**: storage roots now come
 from `config/paths.yml` via `lib/project_config.py`, instead of the hard-coded
@@ -47,7 +48,8 @@ copy of the pickle under `99_main/05_prepare_reg/out/` is byte-identical
 
 The `Rating_deepmreye_movie{DM,TP}`, `Rating_recon_all` and `Remarks` columns it
 writes are **manual visual-QC ratings**, not computed. They cannot be regenerated
-from code, which is one reason the participants table is published as data.
+from code, which is one reason the participants table is released as data
+(per-subject tier, on request).
 
 ### 1. Gaze weight maps — `05_prepare_reg_0save_gaze_weight_sub.py`
 
@@ -94,21 +96,23 @@ Requires the NLTK `wordnet31` corpus. Batch script, no PBS.
 
 ## Outputs consumed downstream
 
-| Output | Consumer | Published |
+| Output | Consumer | Released |
 |---|---|---|
-| `participants_df_deepmreye_inc_byhx.xlsx` | P3, P4, P5, P6, P7, P8 | yes |
-| `results_hbn_td_asd_inc_byhx_edited.pickle` | step 1 (and Ext. Data Fig. 4) | yes |
-| `wordnet_gaze_weighted_regressor_…/bias-0.9_verb-1.0/{sub_id}_regressor_{DM,TP}.xlsx` | P3 | yes |
+| `participants_df_deepmreye_inc_byhx.xlsx` | P3, P4, P5, P6, P7, P8 | on request |
+| `results_hbn_td_asd_inc_byhx_edited.pickle` | step 1 (and Ext. Data Fig. 4) | on request |
+| `wordnet_gaze_weighted_regressor_…/bias-0.9_verb-1.0/{sub_id}_regressor_{DM,TP}.xlsx` | P3 | on request |
 | 85 labels + occurrence frequency (`features_85.csv`) | P4, P5 | yes |
 
-**These are published on Figshare** (≈ 202 MB; see `docs/FIGSHARE_MANIFEST.md`
-§5). They describe which semantic labels occur in each TR and how strongly each
-subject attended to them — a time-aligned semantic description of the films, not
-the films themselves. The frames, the polygon masks and the per-frame gaze maps
-stay unpublished.
+**How these are released** (see `docs/DERIVED_DATA_MANIFEST.md` §4–5):
+`features_85.csv` and the stimulus annotations are public on Zenodo. The
+participants table, the DeepMREye gaze pickle and the gaze-weighted regressors
+describe individual subjects, so they are in the per-subject tier, available on
+request to HBN DUA holders; `rebuild_participants_df.py` reconstructs the
+participants table from the reader's own LORIS access. The frames, the polygon
+masks and the per-frame gaze maps are not released.
 
 So although this pipeline cannot be *run* without the stimuli and the imaging
-data, its inputs to P3 are all available, and P4 and P5 need only
+data, its inputs to P3 are available to DUA holders, and P4 and P5 need only
 `features_85.csv` from it.
 
 ## Known issues

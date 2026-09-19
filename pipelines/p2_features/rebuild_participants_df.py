@@ -1,10 +1,11 @@
 """
 Rebuild the phenotypic tables from your own HBN LORIS access.
 
-The published data archive deliberately omits every table containing per-subject
-phenotypic values. Those come from the HBN LORIS release, which is governed by a
-Data Use Agreement, so they cannot be redistributed. Everything *else* in the
-archive is derived from the openly-released FCP-INDI imaging and is published.
+The public data archive (Zenodo) contains no per-subject data. Tables with
+per-subject phenotypic values come from the HBN LORIS release, which is governed
+by a Data Use Agreement, so they cannot be redistributed; other per-subject
+derived data are available to DUA holders on request (see
+docs/DERIVED_DATA_MANIFEST.md).
 
 This script regenerates the omitted tables from a LORIS release you already have
 access to, reproducing the exact columns and dtypes the pipelines expect.
@@ -24,8 +25,8 @@ What it cannot rebuild
 The three manual visual-QC columns - ``Rating_recon_all``,
 ``Rating_deepmreye_movieDM``, ``Rating_deepmreye_movieTP`` - and ``Remarks``.
 These are human ratings, not derived quantities: they exist nowhere in LORIS and
-cannot be recomputed. They ARE published, in ``qc_ratings.csv`` in the archive,
-because they contain no HBN phenotypic data. This script merges them back in.
+cannot be recomputed. They are provided in ``qc_ratings.csv`` in the
+per-subject tier (on request). This script merges them back in.
 
 Downstream tables
 -----------------

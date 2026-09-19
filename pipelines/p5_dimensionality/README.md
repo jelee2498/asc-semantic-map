@@ -24,7 +24,7 @@ Reproduced on 2026-08-25, entering from the cached PR arrays alone.
 
 The run was seeded with **only** `cov_pr_td.npy` and `cov_pr_asd.npy` in the
 output directory; everything else was recomputed. This is exactly the path a
-reader takes after downloading the Figshare bundle.
+reader takes with the per-subject tier.
 
 | Value | Manuscript | Reproduced |
 |---|---|---|
@@ -70,7 +70,7 @@ The V1/V2/MT/TPOJ similarity-matrix insets read
 `cov_sim_mmp_{td,asd}_avg_list.pkl` (2 × 21 MB) from the same directory. Without
 them the run completes and the insets are skipped. Confirmed against the code:
 these two files are what the insets need, and they are listed in
-`docs/FIGSHARE_MANIFEST.md`.
+`docs/DERIVED_DATA_MANIFEST.md`.
 
 ---
 
@@ -78,10 +78,10 @@ these two files are what the insets need, and they are listed in
 
 | Input | Source |
 |---|---|
-| `cov_pr_{td,asd}.npy` | Figshare — **the entry point** |
-| `participants_df_deepmreye_inc_byhx.xlsx` | Figshare |
-| `mask_fdr-0.01.npy` (291 parcels) | Figshare (P3 output) |
-| `cov_sim_mmp_{td,asd}_avg_list.pkl` | Figshare — Fig. 3a insets only |
+| `cov_pr_{td,asd}.npy` | per-subject tier, on request — **the entry point** |
+| `participants_df_deepmreye_inc_byhx.xlsx` | per-subject tier, on request |
+| `mask_fdr-0.01.npy` (291 parcels) | Zenodo (P3 output) |
+| `cov_sim_mmp_{td,asd}_avg_list.pkl` | Zenodo — Fig. 3a insets only |
 | MMP atlas, medial wall, surfaces, Yeo, EG17 | `templates/` (vendored) |
 | Ito & Murray multi-task dimensionality | `templates/external/` (Fig. 3b) |
 | Vertex-level encoding weights (~20 GB) | **not published** — `--recompute-pr` only |

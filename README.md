@@ -1,6 +1,6 @@
 # Cortex-wide mapping of visual semantic representation in autism
 
-Code and derived data for Lee et al., *How do children with autism perceive the
+Code for Lee et al., *How do children with autism perceive the
 external world?: Cortex-wide mapping of visual semantic representation*.
 
 > **Status.** All main-analysis pipelines (P2–P8) are migrated. P4, P5, P7 and
@@ -20,8 +20,11 @@ Reproduction starts from the **encoding-model results**, not from raw imaging.
 Neither the fMRI data nor the movie stimuli can be redistributed: the imaging and
 phenotypic data are governed by the HBN Data Use Agreement, and the film frames
 are copyrighted (51 GB of stimulus assets, in any case). The encoding weights are
-the first point in the pipeline that is both compact and shareable, so they are
-published on Figshare and everything downstream of them runs from this repository.
+the first compact point in the pipeline, and everything downstream of them runs
+from this repository. Group-level results are public on Zenodo
+(<https://doi.org/10.5281/zenodo.22846400>); the per-subject derived data (encoding weights and
+the like) are data about individual subjects under the HBN Data Use Agreement and
+are available on request to DUA holders — see [Data availability](#data-availability).
 
 ```
   raw fMRI  ──►  preprocessing  ──►  gaze-weighted   ──►  ENCODING MODEL
@@ -48,7 +51,7 @@ templates/      Vendored atlases and surfaces, SHA-256 pinned (20 files, ~11 MB)
 lib/            project_config.{py,R}, spatial_nulls.py, sharp_test.py
 pipelines/      One directory per analysis stage, each with its own README
 figures/        Generated figures, one subdirectory per pipeline (git-ignored)
-docs/           Stage notes, Figshare manifest, path verification
+docs/           Stage notes, derived-data manifest, path verification
 ```
 
 Stages upstream of the encoding model (`pipelines/p2_features/`,
@@ -70,15 +73,17 @@ Rscript -e 'renv::restore(lockfile = "environment/renv.lock")'
 # 3. Verify the vendored templates
 cd templates && sha256sum -c SHA256SUMS.txt && cd ..
 
-# 4. Download the derived data from Figshare (525 MB) and extract it into
-#    your project directory - it mirrors the project layout. See
-#    docs/FIGSHARE_MANIFEST.md
+# 4. Download the public derived data from Zenodo (132 MB) and, if you hold an
+#    HBN DUA, the per-subject tier (on request). Extract both into your project
+#    directory - they mirror the project layout. See
+#    docs/DERIVED_DATA_MANIFEST.md
 
 # 5. Point roots.project in config/paths.yml at that directory
 ```
 
-`brainiak` and `fastsrm` are **not** required. They belong to the SRM and
-preprocessing stages, which are not reproduced here — worth knowing, as brainiak
+`brainiak` (0.11, used for the shared response model) and `fastsrm` are **not**
+required. They belong to the SRM and preprocessing stages, which are not
+reproduced here — worth knowing, as brainiak
 is the most difficult dependency in this stack to build.
 
 ## The manuscript configuration
@@ -98,7 +103,7 @@ intend to run something other than the published analysis.
 |---|---|---|---|---|
 | P0 | Foundation: environments, templates, nulls | — | — | **complete** |
 | P2 | Gaze-informed feature construction | Fig. 1a–b, Supp. Fig. 2 | no | published for inspection |
-| P3 | Parcel-level encoding + performance mask | Fig. 1b–d | no | published for inspection; outputs on Figshare |
+| P3 | Parcel-level encoding + performance mask | Fig. 1b–d | no | published for inspection; group outputs on Zenodo |
 | P4 | Semantic axis (PCA) | Fig. 2, Supp. Fig. 3–5 | yes | **verified** — outputs byte-identical |
 | P5 | Representational dimensionality | Fig. 3 | yes | **verified** — outputs byte-identical |
 | P6 | Symptom prediction | Fig. 4 | yes | migrated; results cross-checked, not re-run |
@@ -119,16 +124,19 @@ scheduled after the pipelines above.
   (<https://fcon_1000.projects.nitrc.org/indi/cmi_healthy_brain_network/>), under
   its Data Use Agreement. The independent validation cohort is held at McGill
   University under a separate agreement.
-- **Derived data**: Figshare — encoding-model weights and test correlations, the
-  performance mask, participation-ratio arrays, the spatial-null cache, the
-  phenotypic covariate table, the SEM/subtyping tables, and the stimulus
-  annotations and gaze-weighted regressors. See `docs/FIGSHARE_MANIFEST.md`.
-- **Gaze**: the DeepMREye per-TR gaze predictions and uncertainties for all 781
-  movie runs are published.
+- **Derived data, public**: Zenodo, <https://doi.org/10.5281/zenodo.22846400> — the
+  performance mask and group encoding accuracy, dimensionality group statistics,
+  normative trajectories, SEM and subtype model fits, the spatial-null cache, and
+  the stimulus annotations and feature matrices. See `docs/DERIVED_DATA_MANIFEST.md`.
+- **Derived data, per-subject**: encoding-model weights and test correlations,
+  participation-ratio arrays, DeepMREye gaze predictions, gaze-weighted
+  regressors, and the phenotypic, QC and SEM input tables. These are data about
+  individual subjects, which the CMI Biobank Data Use Agreement restricts; they
+  are available to investigators holding a DUA on request to the corresponding
+  authors.
 - **Stimuli**: the films themselves are copyrighted and not redistributable, nor
   are the frame-level polygon masks derived from them. The frame-by-frame
-  semantic annotations, the 85-feature matrices and the per-subject gaze-weighted
-  regressors built from them **are** published.
+  semantic annotations and the 85-feature matrices **are** public.
 
 ## Licence
 

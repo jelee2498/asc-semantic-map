@@ -3,7 +3,8 @@
 **Manuscript:** Fig. 2a–i; Supp. Fig. 3, 4, 5; Supp. Table 1.
 
 **Runnable: yes.** This is the first reproducible stage. It starts from the
-published encoding-model results (Figshare) rather than from imaging data.
+encoding-model results (per-subject tier, on request to HBN DUA holders) rather
+than from imaging data.
 
 Scripts are the working-tree originals; changes are limited to path
 configuration and the four fixes listed under [Changes](#changes-from-the-working-tree).
@@ -75,7 +76,7 @@ Whole-cortex TD-vs-ASC comparison of the PC1 map, with an
 eigenstrapping/spin null for the spatial correlation (published r = 0.78).
 
 Slow: 2000 surrogates. Ship the cached surrogates
-(`_spatial_nulls_cache/`, Figshare) to reproduce `p_eigen` exactly rather than
+(`_spatial_nulls_cache/`, Zenodo) to reproduce `p_eigen` exactly rather than
 only statistically — see `docs/STAGE_A_NOTES.md` §3.3.
 
 ### Supplementary components
@@ -90,12 +91,12 @@ only.
 
 | Input | Source |
 |---|---|
-| Fold-averaged encoding weights, 246 × (85 × 360) | Figshare (P3 output) |
-| `mask_fdr-0.01.npy` (291 parcels) | Figshare (P3 output) |
-| `participants_df_deepmreye_inc_byhx.xlsx` | Figshare |
-| 85 labels + occurrence frequency | Figshare (`features_85.csv`) |
+| Fold-averaged encoding weights, 246 × (85 × 360) | per-subject tier, on request (P3 output) |
+| `mask_fdr-0.01.npy` (291 parcels) | Zenodo (P3 output) |
+| `participants_df_deepmreye_inc_byhx.xlsx` | per-subject tier, on request |
+| 85 labels + occurrence frequency | Zenodo (`features_85.csv`) |
 | MMP atlas, sections, surfaces, Yeo, EG17 | `templates/` (vendored) |
-| Diveica et al. semantic ratings | `0_data/semantic_features/` (Fig. 2e) |
+| Wang et al. (2023) semantic ratings, *Sci. Data* 10, 106 | `0_data/semantic_features/` (Fig. 2e) |
 
 ## Outputs
 

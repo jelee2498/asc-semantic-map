@@ -19,7 +19,8 @@ roots:
   # Original: an out-of-project shared directory, S:/jelee/template
   templates: "./templates"
 
-  # Derived data downloaded from Figshare (docs/FIGSHARE_MANIFEST.md).
+  # Derived data: public tier from Zenodo plus the per-subject tier on request
+  # (docs/DERIVED_DATA_MANIFEST.md).
   # The entry point for reproduction: encoding-model results, participation-ratio
   # arrays, the spatial-null cache, and the phenotypic covariate table.
   derivatives: "./derivatives"

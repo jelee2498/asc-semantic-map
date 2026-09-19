@@ -75,7 +75,7 @@ All present and resolved (checked 2026-08-25):
 | `sig_regions_Whole_sign-True_iter-10.npy` | P4 — 33 parcels | 4 KB |
 | `cov_pr_{td,asd}.npy` | P5 | 304 / 392 KB |
 | `cov_sig_mmp.npy` | P5 — 95 parcels | 4 KB |
-| `participants_df_deepmreye_inc_byhx.xlsx` | Figshare — SRS targets, covariates | 120 KB |
+| `participants_df_deepmreye_inc_byhx.xlsx` | per-subject tier (on request) — SRS targets, covariates | 120 KB |
 
 Targets are the five SRS subscales: `SRS_{AWR,COG,COM,MOT,RRB}_T`.
 

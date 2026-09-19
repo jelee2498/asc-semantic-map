@@ -98,7 +98,7 @@ PROJECT: Path = _resolve_root(_ROOTS.get('project'))
 #: Vendored atlases and surfaces (ships with this repository).
 TEMPLATES: Path = _resolve_root(_ROOTS.get('templates'))
 
-#: Derived data downloaded from Figshare.
+#: Derived data (Zenodo public tier + per-subject tier on request).
 DERIVATIVES: Path = _resolve_root(_ROOTS.get('derivatives'))
 
 #: Generated figures, one subdirectory per pipeline.
@@ -217,7 +217,7 @@ def require(root: Optional[Path], name: str, needed_for: str) -> Path:
     if root is None:
         raise FileNotFoundError(
             f"roots.{name} is not set in config/paths.yml, but it is required "
-            f"for {needed_for}. See docs/FIGSHARE_MANIFEST.md for what this "
+            f"for {needed_for}. See docs/DERIVED_DATA_MANIFEST.md for what this "
             f"directory should contain."
         )
     return root

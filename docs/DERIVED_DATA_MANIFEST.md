@@ -1,22 +1,37 @@
-# Figshare manifest
+# Derived-data manifest
 
-Derived data required to reproduce the analyses in this repository. Download
-into `./derivatives/`, preserving the directory structure below — the paths
-encode the analysis parameters (`config/params.yml`) and the scripts resolve
-them literally.
+Derived data required to reproduce the analyses in this repository. Extract into
+`./derivatives/` (or point `roots.project` in `config/paths.yml` at the extraction
+directory), preserving the directory structure below — the paths encode the
+analysis parameters (`config/params.yml`) and the scripts resolve them literally.
 
-**Staged 2026-08-26 to `3_output/Figshare/` — 525 MB, 1540 files**, with
-`SHA256SUMS.txt` covering every file (verified). The archive mirrors the project
-directory layout so it extracts into place.
+The data are released in two tiers, because the Child Mind Institute Biobank
+Data Use Agreement (DUA) restricts the transfer of data about individual
+subjects (§36–37), including information *derived* from Biobank data.
 
-Validated end to end: with the bundle as the *only* data source, P4 reproduced
-all nine of its published arrays byte-for-byte.
+| Tier | Contents | Access |
+|---|---|---|
+| **Public** | group-level results, stimulus annotations, spatial-null cache — 36 files, 132 MB | Zenodo, <https://doi.org/10.5281/zenodo.22846400> |
+| **Per-subject** | encoding weights, gaze predictions, gaze-weighted regressors, participation ratios, phenotypic and QC tables, normative/SEM input tables — 1504 files, 397 MB | on request to the corresponding authors, for investigators holding a CMI Biobank DUA |
 
-Sizes below are measured, not estimated.
+Each section below is marked **[public]** or **[per-subject]**. Both archives ship
+a `SHA256SUMS.txt` covering every file and mirror the project layout, so they
+extract into place side by side.
+
+With the public tier alone, the SEM fits (Fig. 5), subtype fits (Fig. 6g),
+dimensionality group statistics (Fig. 3c), the performance mask (Fig. 1d) and the
+spatial-null p-values can be checked directly. Re-running P4 onward needs the
+per-subject tier as well.
+
+Validated end to end: with the full (both-tier) bundle as the *only* data source,
+P4 reproduced all nine of its published arrays byte-for-byte.
 
 ---
 
 ## 1. Encoding-model results — entry point for P4
+
+**[public]** `mask_fdr-0.01.npy`, `test_corrs_of_avg.npy`, `test_corrs_pval_of_avg.npy`.
+**[per-subject]** `weight/`, `test_corrs/`, `test_corrs_corrected/`, `noise_ceiling/`.
 
 `2_pipeline/99_main/06_encoding_model/out/default+me/mmp/chunk-9/fold-avg/d-True/k-0/bias-0.9_verb-1.0/wn-True/seed-0/s_alpha-True/`
 
@@ -26,16 +41,20 @@ Sizes below are measured, not estimated.
 | `test_corrs/`, `test_corrs_corrected/`, `noise_ceiling/` — 246 each | 98 MB |
 | `test_corrs_of_avg.npy`, `test_corrs_pval_of_avg.npy` | small |
 | `mask_fdr-0.01.npy` — **the performance mask, 291 of 360 parcels** | small |
-| **Staged total** | **234 MB, 987 files** |
+| **Total (both tiers)** | **234 MB, 987 files** |
 
 > The `s_alpha-True/` directory on disk is 497 MB, but 263 MB of that is a
 > `sem/` subtree of parameter-search leftovers (`mask_bf-0.01`, `sign-False`,
 > `iter-2/4/6`) that is **not** the manuscript configuration. Excluded.
 
-This is the first shareable point in the pipeline. Everything upstream is either
-governed by the HBN Data Use Agreement (imaging) or copyrighted (stimuli).
+This is the first point in the pipeline that is compact enough to share. Everything
+upstream is either governed by the HBN Data Use Agreement (imaging) or copyrighted
+(stimuli).
 
 ## 2. Participation-ratio arrays — entry point for P5
+
+**[public]** `cov_sig_mmp.npy`, `cov_stat_results{,_wholebrain}.npy`, `cov_sim_mmp_{td,asd}_avg_list.pkl`.
+**[per-subject]** `cov_pr_{td,asd}.npy`.
 
 `2_pipeline/99_main/09_dimensionality/out/32k/default+me/det_results_inc_byhx_docu-True/k-50/bias-0.9_verb-1.0/wn-True/seed-0/s_alpha-False/`
 
@@ -62,6 +81,8 @@ Without them the run completes and only the insets are skipped.
 
 ## 3. Spatial-null cache — exact `p_eigen` reproduction
 
+**[public]**
+
 `2_pipeline/99_main/_spatial_nulls_cache/`
 
 | File | Size |
@@ -76,6 +97,9 @@ reproduction cannot be obtained from a seed alone.
 
 ## 4. Phenotypic covariates
 
+**[per-subject]** All files in this section. `pipelines/p2_features/rebuild_participants_df.py`
+reconstructs the participants table from the reader's own LORIS access.
+
 `participants_df_deepmreye_inc_byhx.xlsx` — 489 rows × 26 columns.
 
 Supplies the GLM covariates (Age, Sex, Site, Mean_FD_DM), the quality-control
@@ -87,27 +111,31 @@ Columns: `DX`, `ASD_certainty`, `ASD_document`, `Site`, `Age`, `Sex`,
 `condition_ok`, `prep_ok` (×2), `Mean_FD_{DM,TP}`, `QC_link_recon_all`,
 `Rating_recon_all`, `Remarks`, `Rating_deepmreye_movie{DM,TP}`.
 
-`nih_toolbox_scores.csv` — **staged**. The four NIH Toolbox percentile scores
+`nih_toolbox_scores.csv` — the four NIH Toolbox percentile scores
 used as the SEM's cognitive-ability indicators, extracted from the HBN LORIS
-release for the same 489 subjects (453 complete on all four). Publishing it
-removes P7/P8's dependency on separate LORIS access.
+release for the same 489 subjects (453 complete on all four). With it, P7/P8
+no longer need separate LORIS access.
 
-`QC_link_recon_all` (an internal QC URL) was **dropped** — the staged table is
+`QC_link_recon_all` (an internal QC URL) was **dropped** — the released table is
 489 × 25 rather than 489 × 26.
 
-> **Still open before release:** both tables are derived from HBN phenotypic data
-> keyed to HBN subject IDs. Confirm with the HBN data-access team that
-> redistributing derived phenotypic variables is permitted.
+Both tables are derived from HBN phenotypic data keyed to HBN subject IDs, so
+they are in the per-subject tier. `qc_ratings.csv` (site, mean FD, preprocessing
+flags, manual visual-QC ratings) is held with them.
 
 ## 5. Stimulus annotations and gaze-weighted regressors (P2)
 
-**Decided 2026-08-25: publish.** Earlier drafts of this manifest treated the
-regressors as non-redistributable; that was over-cautious. They describe *which
-semantic labels are present in each TR* and *how strongly each subject attended
-to them* — a time-aligned semantic description of the films, not the films. This
-is in line with what comparable naturalistic-encoding papers publish. The frames,
-the polygon masks and the per-frame gaze maps remain excluded (see
-[Not published](#not-published)).
+**[public]** the stimulus annotations, label lists, 61- and 85-feature matrices,
+`features_85.csv` and the motion-energy regressors.
+**[per-subject]** the gaze-weighted regressors (500 files) and the DeepMREye gaze
+pickle — both are measures of individual subjects.
+
+The annotations and feature matrices describe *which semantic labels are present
+in each TR* — a time-aligned semantic description of the films, not the films —
+and are public. The gaze-weighted regressors additionally encode *how strongly
+each subject attended to them*, which makes them per-subject data under the DUA.
+The frames, the polygon masks and the per-frame gaze maps are not released at all
+(see [Not released in either tier](#not-released-in-either-tier)).
 
 Total ≈ 202 MB.
 
@@ -143,6 +171,13 @@ Total ≈ 202 MB.
 
 ## 6. Normative-model and subtyping tables — standalone P7 / P8
 
+**[public]** `subtype_model1_*.csv`, `subtype_sample_summary.csv`, and from
+`11_sem_zscore/`: `gam_trajectory_*.csv`, `sem_model_fit_measures.csv`,
+`sem_model1_{headline,paths_std,defined_effects}.csv`.
+**[per-subject]** `{sem,dim}_data_{td,asd}_raw.csv`, `zscore_{td,asd}.csv`,
+`all_sem_dim_zscore{,_asd,_td}.csv`, `cluster_assignments_profile.csv`,
+`sem_input_*.csv`.
+
 `2_pipeline/99_main/11_sem_zscore/out/.../screen-True_overlap-False/`
 — `{sem,dim}_data_{td,asd}_raw.csv`, `zscore_{td,asd}.csv`,
 `all_sem_dim_zscore.csv`
@@ -152,16 +187,17 @@ Total ≈ 202 MB.
 `subtype_model1_{fit_measures,paths_std,defined_effects,multigroup_fit}.csv`,
 `subtype_sample_summary.csv`
 
-< 5 MB. Publishing these lets P7 and P8 be checked without running P4/P5 at all,
-and they are the files the reported SEM and subtype statistics were read from.
+< 5 MB. The public files are the ones the reported SEM and subtype statistics
+were read from; with the per-subject tables added, P7 and P8 can be re-run
+without P4/P5.
 
 Note the parameter branch: three other `screen-*_overlap-*` combinations exist in
-the working tree and are **not** the published analysis. Publish only
-`screen-True_overlap-False`.
+the working tree and are **not** the published analysis. Only
+`screen-True_overlap-False` is released.
 
 ---
 
-## Not published
+## Not released in either tier
 
 | | Why |
 |---|---|

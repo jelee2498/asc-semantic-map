@@ -9,8 +9,9 @@
 #   neuromaps==0.0.3rc1+2.g185444b  - a git-describe version with no PyPI release.
 #                                     Only its DATA files are used, and those are
 #                                     vendored under templates/neuromaps-data/.
-#   fastsrm==0.0.4                  - conda-only; belongs to the SRM/preprocessing
-#                                     stages, which are not reproduced here.
+#   fastsrm==0.0.4                  - conda-only; not used for the published
+#                                     results (the SRM used brainiak 0.11, in a
+#                                     separate environment).
 #
 # eigenstrapping==0.1 is required by lib/spatial_nulls.py.  Keep it pinned: later
 # releases change the mode-rotation internals and will not reproduce the published

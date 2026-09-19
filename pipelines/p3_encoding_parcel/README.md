@@ -6,9 +6,10 @@ evaluation*.
 **Runnable here: no.** Published for inspection. Requires preprocessed HBN fMRI
 (Data Use Agreement) and the P2 regressors (derived from copyrighted stimuli).
 
-Its **outputs are published** on Figshare and are the entry point for
-reproduction: P4 starts by loading the fold-averaged weights and the performance
-mask produced here. See `docs/FIGSHARE_MANIFEST.md`.
+Its outputs are the entry point for reproduction: P4 starts by loading the
+fold-averaged weights and the performance mask produced here. The group-level
+outputs are public on Zenodo; the per-subject weights and correlations are
+available on request to HBN DUA holders. See `docs/DERIVED_DATA_MANIFEST.md`.
 
 Scripts are the working-tree originals with **one change**: storage roots now come
 from `config/paths.yml` via `lib/project_config.py`, instead of the hard-coded
@@ -74,16 +75,16 @@ restricts every subsequent analysis in the paper.
 
 ---
 
-## Published outputs (Figshare)
+## Released outputs (Zenodo / on request)
 
 `…/chunk-9/fold-avg/d-True/k-0/bias-0.9_verb-1.0/wn-True/seed-0/s_alpha-True/`
 
 | | |
 |---|---|
-| `weight/{sub_id}.npy` × 246 | 85 features × 360 parcels |
-| `test_corrs/`, `test_corrs_corrected/`, `noise_ceiling/` | Fig. 1c |
-| `test_corrs_of_avg.npy`, `test_corrs_pval_of_avg.npy` | |
-| `mask_fdr-0.01.npy` | Fig. 1d |
+| `weight/{sub_id}.npy` × 246 | 85 features × 360 parcels — per-subject, on request |
+| `test_corrs/`, `test_corrs_corrected/`, `noise_ceiling/` | Fig. 1c — per-subject, on request |
+| `test_corrs_of_avg.npy`, `test_corrs_pval_of_avg.npy` | Zenodo |
+| `mask_fdr-0.01.npy` | Fig. 1d — Zenodo |
 | **total** | **497 MB** |
 
 Note `s_alpha-True` here. The vertex-level branch that feeds P5 uses

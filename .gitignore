@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
 
-# Derived data downloaded from Figshare (see docs/FIGSHARE_MANIFEST.md)
+# Derived data (Zenodo + per-subject tier; see docs/DERIVED_DATA_MANIFEST.md)
 derivatives/
 
 # OS / editor cruft

@@ -13,8 +13,9 @@
 # and those stages are not part of this repository.
 #
 # Scope note: the verification pipelines shipped here (P4, P5, P7, P8) do NOT
-# import brainiak, fastsrm or neuromaps.  brainiak and fastsrm belong to the
-# SRM/preprocessing stages, which are not reproduced here; the `neuromaps-data`
+# import brainiak, fastsrm or neuromaps.  The shared response model was fitted
+# with brainiak 0.11 in a separate environment, and fastsrm was not used for the
+# published results; neither stage is reproduced here; the `neuromaps-data`
 # atlas files are vendored under templates/ so the neuromaps package is not
 # needed either.  They are therefore absent from requirements-lock.txt.
 
