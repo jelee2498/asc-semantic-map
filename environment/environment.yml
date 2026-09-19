@@ -1,12 +1,17 @@
 # Python environment for the ASC semantic-map analyses.
 #
-# Captured from the `fastsrm` conda environment used to produce the published
-# results (conda 4.9.2, Windows x64).  Everything except the interpreter and the
-# MKL stack was installed with pip, so the exact package set lives in
-# requirements-lock.txt and is installed from there.
+# Based on the `fastsrm` conda environment used to produce the published results
+# (conda 4.9.2, Windows x64).  Everything except the interpreter and the MKL stack
+# was installed with pip.  This file installs the interpreter plus
+# requirements.txt (the packages the pipelines import, at their published
+# versions); a second command adds brainstat without dependency resolution:
 #
-#   conda env create -f environment.yml
+#   conda env create -f environment/environment.yml
 #   conda activate asc-semantic-map
+#   pip install --no-deps -r environment/requirements-nodeps.txt
+#
+# requirements-lock.txt is the full snapshot of the original environment, for
+# provenance.  It contains conflicting pins and is not installed from here.
 #
 # The environment is named `asc-semantic-map` rather than `fastsrm`: the original
 # name refers to a package (fastsrm) that only the preprocessing/SRM stages need,
@@ -17,7 +22,7 @@
 # with brainiak 0.11 in a separate environment, and fastsrm was not used for the
 # published results; neither stage is reproduced here; the `neuromaps-data`
 # atlas files are vendored under templates/ so the neuromaps package is not
-# needed either.  They are therefore absent from requirements-lock.txt.
+# needed either.  They are therefore absent from requirements.txt.
 
 name: asc-semantic-map
 
@@ -38,4 +43,4 @@ dependencies:
   - mkl_random=1.2.2
   - intel-openmp=2021.4.0
   - pip:
-      - -r requirements-lock.txt
+      - -r requirements.txt

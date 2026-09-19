@@ -41,6 +41,9 @@ from scipy.stats import zscore, pointbiserialr, pearsonr, t as t_dist
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'lib'))
 from project_config import PROJECT, TEMPLATES, template, fig_dir  # noqa: E402
+# PCA and sign-only Procrustes exactly as the (locally modified) brainspace used
+# for the published analysis computed them; see lib/brainspace_ext.py.
+import brainspace_ext  # noqa: E402
 from scipy.io import savemat, loadmat
 
 # Neuroimaging
@@ -1850,6 +1853,18 @@ def add_superordinate_weights(
     """
     print('* Add superordinate weights')
 
+    # Fail loudly if the WordNet 3.1 corpus is missing.  The per-label handler
+    # below used to catch every exception, so a missing corpus skipped all labels
+    # and the run finished with different weights and no warning.
+    try:
+        wn.ensure_loaded()
+    except LookupError as exc:
+        raise LookupError(
+            "The NLTK WordNet 3.1 corpus is required for the superordinate step. "
+            "Install it with: python -c \"import nltk; nltk.download('wordnet'); "
+            "nltk.download('wordnet31')\""
+        ) from exc
+
     weight_wordnet_list = []
 
     for weight in weight_list:
@@ -1867,8 +1882,8 @@ def add_superordinate_weights(
                         # Use original weights for updates
                         weight_df.loc[label] += weight_df_original.loc[hyper_name]
 
-            except Exception as e:
-                # Silently skip labels without hypernyms
+            except WordNetError:
+                # Skip labels that are not WordNet synsets (none of the 85 are)
                 pass
 
         weight_wordnet_list.append(weight_df.values)
@@ -1917,12 +1932,20 @@ def compute_semantic_template(
 
     weight_mean = np.array(weight_list).mean(0)
 
+    # Fit on z-scored mean
+    weight_mean_z = zscore(weight_mean, axis=0)
+
+    loadings = None
     if method == 'pca':
-        emb = GradientMaps(
+        # PCA of the z-scored mean itself (no kernel, negative values kept).
+        # Released brainspace would apply its default kernel and zero negative
+        # values, which does not reproduce the published template.
+        gradients, _, components = brainspace_ext.pca_embedding(
+            weight_mean_z,
             n_components=min(weight_mean.shape),
-            approach=method,
             random_state=0
         )
+        loadings = components.T[:, :n_components]
     elif method == 'dm':
         emb = GradientMaps(
             kernel='normalized_angle',
@@ -1930,17 +1953,12 @@ def compute_semantic_template(
             approach=method,
             random_state=0
         )
+        emb.fit(weight_mean_z, sparsity=0)
+        gradients = emb.gradients_
     else:
         raise ValueError(f"Unknown method: {method}")
 
-    # Fit on z-scored mean
-    emb.fit(zscore(weight_mean, axis=0), sparsity=0)
-
-    gradients = emb.gradients_[:, :n_components]
-
-    loadings = None
-    if method == 'pca':
-        loadings = emb.loadings_.T[:, :n_components]
+    gradients = gradients[:, :n_components]
 
     return gradients, loadings
 
@@ -2001,29 +2019,30 @@ def align_individual_spaces(
     """
     print('* Align individual semantic spaces')
 
+    # Per-subject PCA, then iterative Procrustes to the template.  With
+    # pca_only_sign, components only flip sign, and only when negatively and
+    # significantly correlated with the reference (lib/brainspace_ext.py).
     # Align TD group (batch processing)
     print('  Aligning TD group...')
-    emb_td = GradientMaps(
+    sem_list_td = brainspace_ext.align_to_reference(
+        weight_list_td,
+        template,
         n_components=10,
-        approach='pca',
-        alignment='procrustes',
+        n_iter=config['pca_iter'],
         only_sign=config['pca_only_sign'],
         random_state=0
     )
-    emb_td.fit(weight_list_td, reference=template, sparsity=0, n_iter=config['pca_iter'])
-    sem_list_td = [sem[:, :10] for sem in emb_td.aligned_]
 
     # Align ASD group (batch processing)
     print('  Aligning ASD group...')
-    emb_asd = GradientMaps(
+    sem_list_asd = brainspace_ext.align_to_reference(
+        weight_list_asd,
+        template,
         n_components=10,
-        approach='pca',
-        alignment='procrustes',
+        n_iter=config['pca_iter'],
         only_sign=config['pca_only_sign'],
         random_state=0
     )
-    emb_asd.fit(weight_list_asd, reference=template, sparsity=0, n_iter=config['pca_iter'])
-    sem_list_asd = [sem[:, :10] for sem in emb_asd.aligned_]
 
     return [sem_list_td, sem_list_asd]
 

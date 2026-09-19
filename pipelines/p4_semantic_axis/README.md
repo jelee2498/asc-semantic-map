@@ -7,14 +7,20 @@ encoding-model results (per-subject tier, on request to HBN DUA holders) rather
 than from imaging data.
 
 Scripts are the working-tree originals; changes are limited to path
-configuration and the four fixes listed under [Changes](#changes-from-the-working-tree).
-Analysis code is untouched.
+configuration and the fixes listed under [Changes](#changes-from-the-working-tree).
+The computations are unchanged. Change 6 moves the brainspace modifications the
+analysis depended on into `lib/brainspace_ext.py` without changing any result.
 
 ---
 
 ## Verification status
 
-Reproduced on 2026-08-25 against the published outputs.
+Reproduced on 2026-08-25 against the published outputs, and again on 2026-09-20
+with the **released** brainspace 0.1.20 from PyPI after the brainspace changes
+were moved into `lib/brainspace_ext.py` (change 6 below), in a fresh environment
+installed from `environment/` (isolated from any user site-packages). Both runs
+give the results below. The 2026-09-20 run took 161 s with
+`--skip-surface-figures`, with 0.84 GB peak memory.
 
 | Output | Result |
 |---|---|
@@ -69,6 +75,12 @@ considerably slower.
 Compares the explained variance of the semantic-weight PCs against PCs of the raw
 stimulus matrix (paired t-test, Bonferroni). This is what establishes that the
 first three components carry structure beyond the stimulus.
+
+The script saves only the figure. Verified on 2026-09-20: the version at commit
+46708e0, run on the modified brainspace, and the current version, run on
+released brainspace 0.1.20, produce identical explained-variance ratios
+(246 × 85, stimulus and semantic), t-values and corrected p-values (max |diff|
+= 0). Semantic PC1–3 are 40.83 / 15.40 / 9.21 %, as reported.
 
 ### 3. `07_pca_global.py` — Supp. Fig. 3
 
@@ -142,6 +154,30 @@ only.
    generated output into the source tree, so a run dirtied the code checkout.
    Subdirectories are preserved (`brain/`, `wordcloud/`, `global/`,
    `pca_significance/`).
+
+6. **Locally modified brainspace → `lib/brainspace_ext.py`.** The published
+   analysis ran on a copy of brainspace 0.1.20 that had been edited in place, so
+   `07_pca.py` failed on the released package (`GradientMaps` has no
+   `only_sign` argument and no `loadings_` attribute). Worse, the released
+   defaults would silently change the numbers. The edits were:
+   - PCA on the input itself: no kernel (the edit changed the default from
+     `'normalized_angle'` to `None`), and negative values kept when
+     `sparsity=0` (released brainspace sets them to zero);
+   - PCA feature loadings stored as `loadings_` (= `PCA.components_`);
+   - `only_sign` Procrustes: inside the usual iterative alignment, a
+     subject's component is sign-flipped only if its Pearson correlation with
+     the reference component is negative **and** significant after FDR
+     (Benjamini–Hochberg, q < 0.01, across the 10 components); otherwise it is
+     left as is.
+
+   `lib/brainspace_ext.py` reimplements exactly these with numpy, scikit-learn,
+   scipy and statsmodels. `07_pca.py` (template, loadings, alignment) and
+   `07_pca_significance.py` (explained variance) now call it. brainspace is
+   still used for the diffusion-map option (which passes its kernel explicitly)
+   and for surface rendering. Checked on the real data: all 246 aligned subject
+   maps, the template and the loadings match the modified package with max
+   |diff| = 0, and a full run under released brainspace reproduces every output
+   in the table above.
 
 Additionally, four `print()` statements used `✓`/`✗`/`⏭`, which raise
 `UnicodeEncodeError` on a non-UTF-8 console (this run hit it on cp949) and abort

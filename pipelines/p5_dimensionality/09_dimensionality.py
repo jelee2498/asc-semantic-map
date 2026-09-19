@@ -64,6 +64,7 @@ from nilearn.glm import regression
 
 # NLP
 from nltk.corpus import wordnet31 as wn
+from nltk.corpus.reader.wordnet import WordNetError
 
 # Visualization
 import matplotlib.pyplot as plt
@@ -634,6 +635,18 @@ def build_hypernym_lookup(
     Returns:
         Dictionary mapping label_idx -> [parent_idx1, parent_idx2, ...]
     """
+    # Fail loudly if the WordNet 3.1 corpus is missing.  The per-label handler
+    # below used to catch every exception, so a missing corpus only printed a
+    # warning per label and the run continued without superordinate weights.
+    try:
+        wn.ensure_loaded()
+    except LookupError as exc:
+        raise LookupError(
+            "The NLTK WordNet 3.1 corpus is required for the superordinate step. "
+            "Install it with: python -c \"import nltk; nltk.download('wordnet'); "
+            "nltk.download('wordnet31')\""
+        ) from exc
+
     # Create label to index mapping
     label_to_index = {label: idx for idx, label in enumerate(label_list)}
 
@@ -657,7 +670,7 @@ def build_hypernym_lookup(
 
             hypernym_indices[label_to_index[label]] = hyper_indices
 
-        except Exception as e:
+        except WordNetError as e:
             print(f'Warning: Could not build hypernyms for {label}: {e}')
             hypernym_indices[label_to_index[label]] = []
 

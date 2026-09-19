@@ -1,0 +1,59 @@
+# Python packages for the runnable pipelines (P4-P8) and lib/.
+#
+# This is the install path.  It lists only the packages the code imports, pinned
+# to the versions in the published environment.  Their dependencies are held to
+# the published versions too, through the snapshot used as a constraints file
+# below.  (requirements-lock.txt is the full snapshot, kept for provenance; it
+# cannot be installed as a whole.)
+#
+#   conda env create -f environment/environment.yml     # Python 3.8 + this file
+#   conda activate asc-semantic-map
+#   pip install --no-deps -r environment/requirements-nodeps.txt
+#
+# requirements-nodeps.txt holds brainstat, whose declared dependencies cannot be
+# resolved together with the published pins, so it is installed without
+# dependency resolution; see that file for the reason.
+
+-c requirements-lock.txt
+
+# Core numerics
+numpy==1.22.0
+scipy==1.10.1
+pandas==1.5.3
+scikit-learn==1.3.2
+statsmodels==0.14.1
+joblib==1.4.2
+networkx==2.8.5
+kneed==0.8.5
+
+# Neuroimaging
+nibabel==5.2.1
+nilearn==0.10.2
+neuroCombat==0.2.12
+brainspace==0.1.20
+vtk==9.1.0
+cbig_network_correspondence==0.2.0
+
+# Spatial nulls (lib/spatial_nulls.py).  eigenstrapping requires neuromaps; the
+# published environment had an unreleased build (0.0.3rc1+2.g185444b), installed
+# here from that exact commit.
+eigenstrapping==0.1
+neuromaps @ git+https://github.com/netneurolab/neuromaps.git@185444b
+
+# Imported by brainstat.stats (brainstat itself is in requirements-nodeps.txt)
+h5py==3.1.0
+trimesh==3.20.0
+
+# Language
+nltk==3.8.1
+
+# Plotting
+matplotlib==3.7.5
+seaborn==0.11.2
+wordcloud==1.8.2.2
+Pillow==8.4.0
+
+# I/O and utilities
+openpyxl==3.0.9
+PyYAML==6.0
+tqdm==4.62.3

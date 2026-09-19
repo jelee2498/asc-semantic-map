@@ -30,6 +30,7 @@ Scripts inside ``pipelines/<stage>/`` reach this module with::
     from project_config import ...
 """
 
+import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -93,7 +94,9 @@ def _resolve_root(value: Optional[str]) -> Optional[Path]:
 _ROOTS = _PATHS.get('roots', {})
 
 #: Project root - the directory containing 0_data/, 1_code/, 2_pipeline/.
-PROJECT: Path = _resolve_root(_ROOTS.get('project'))
+#: The ASC_PROJECT_ROOT environment variable overrides roots.project; the demo
+#: (demo/README.md) uses it to point the pipelines at simulated data.
+PROJECT: Path = _resolve_root(os.environ.get('ASC_PROJECT_ROOT') or _ROOTS.get('project'))
 
 #: Vendored atlases and surfaces (ships with this repository).
 TEMPLATES: Path = _resolve_root(_ROOTS.get('templates'))

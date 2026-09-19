@@ -1,17 +1,39 @@
-# Pinned Python packages for the ASC semantic-map analyses.
+# Snapshot of the environment that produced the published results.
 #
-# Captured with `pip list --format=freeze` from the environment that produced the
-# published results (Python 3.8.12, Windows x64).  Install via environment.yml,
-# which references this file.
+# THIS IS NOT THE INSTALL PATH.  To run the pipelines, install
+# environment/requirements.txt via environment/environment.yml (see README).
 #
-# Two packages present in the original environment were removed because they are
-# not importable by any pipeline in this repository and would break the install:
+# Captured with `pip list --format=freeze` from the original `fastsrm` conda
+# environment (Python 3.8.12, Windows x64).  It records exactly what was installed,
+# for provenance.  Because that environment was built up package by package, the
+# snapshot contains pins that conflict with each other, so pip's resolver cannot
+# install it as a whole (it backtracks indefinitely).  Known conflicts:
+#   tensorflow 2.6.5              requires numpy~=1.19.2 (snapshot: numpy 1.22.0)
+#                                 and typing-extensions<3.11 (snapshot: 4.13.2)
+#   tensorflow-probability 0.21.0 requires typing-extensions<4.6.0
+#   nimare 0.2.2                  requires pandas>=2.0.0 (snapshot: pandas 1.5.3)
+#   pybids 0.16.5                 requires bids-validator>=1.11 (snapshot: 1.8.9)
+#   formulaic 0.5.2               requires graphlib-backport (not installed)
+#
+# To recreate the snapshot exactly (Windows x64, Python 3.8.12), skip dependency
+# resolution:
+#   pip install --no-deps git+https://github.com/MICA-MNI/ENIGMA.git@v2.0.3
+#   pip install --no-deps -r environment/requirements-lock.txt
+# enigmatoolbox 2.0.3 has no PyPI release; it was installed from the GitHub tag,
+# and installing it first lets the second command treat it as satisfied.
+#
+# Two packages present in the original environment are not listed, because they
+# are not importable by any pipeline in this repository and would break the install:
 #   neuromaps==0.0.3rc1+2.g185444b  - a git-describe version with no PyPI release.
 #                                     Only its DATA files are used, and those are
 #                                     vendored under templates/neuromaps-data/.
 #   fastsrm==0.0.4                  - conda-only; not used for the published
 #                                     results (the SRM used brainiak 0.11, in a
 #                                     separate environment).
+#
+# brainspace==0.1.20 below is the PyPI release, but the original environment held
+# a locally modified copy.  The modifications the analysis depends on are in
+# lib/brainspace_ext.py, so the released package reproduces the published results.
 #
 # eigenstrapping==0.1 is required by lib/spatial_nulls.py.  Keep it pinned: later
 # releases change the mode-rotation internals and will not reproduce the published

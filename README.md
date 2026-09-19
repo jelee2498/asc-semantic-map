@@ -44,12 +44,14 @@ their code is retained for provenance, but they are not runnable here.
 ## Repository layout
 
 ```
-environment/    Python (conda + pip lock) and R (renv.lock) specifications
+environment/    Python (conda + pip) and R (renv.lock) specifications
 config/         paths.yml   - storage roots and file locations
                 params.yml  - the manuscript configuration (see warning below)
 templates/      Vendored atlases and surfaces, SHA-256 pinned (20 files, ~11 MB)
-lib/            project_config.{py,R}, spatial_nulls.py, sharp_test.py
+lib/            project_config.{py,R}, spatial_nulls.py, sharp_test.py,
+                brainspace_ext.py (PCA and alignment as used for the paper)
 pipelines/      One directory per analysis stage, each with its own README
+demo/           Simulated dataset and instructions for running P4 end to end
 figures/        Generated figures, one subdirectory per pipeline (git-ignored)
 docs/           Stage notes, derived-data manifest, path verification
 ```
@@ -63,12 +65,15 @@ against the implementation. See `pipelines/README.md`.
 ## Quick start
 
 ```bash
-# 1. Python
+# 1. Python (see System requirements below)
 conda env create -f environment/environment.yml
 conda activate asc-semantic-map
+pip install --no-deps -r environment/requirements-nodeps.txt
+python -c "import nltk; nltk.download('wordnet'); nltk.download('wordnet31')"
 
-# 2. R  (R 4.1.0)
-Rscript -e 'renv::restore(lockfile = "environment/renv.lock")'
+# 2. R  (R 4.1.0; on Windows, Rtools40 to compile packages)
+Rscript -e 'install.packages("renv", repos = "https://cloud.r-project.org")'
+Rscript -e 'renv::restore(lockfile = "environment/renv.lock", prompt = FALSE)'
 
 # 3. Verify the vendored templates
 cd templates && sha256sum -c SHA256SUMS.txt && cd ..
@@ -85,6 +90,70 @@ cd templates && sha256sum -c SHA256SUMS.txt && cd ..
 required. They belong to the SRM and preprocessing stages, which are not
 reproduced here — worth knowing, as brainiak
 is the most difficult dependency in this stack to build.
+
+## System requirements
+
+- **Operating system.** Developed and tested on Windows 10/11 x64, which is the
+  platform the published results were produced on. The Python code has no
+  Windows-specific parts, but only Windows has been tested.
+- **Software.** Python 3.8 through conda (Anaconda or Miniconda; conda 4.9
+  tested) and R 4.1.0 for the SEM stages (P7, P8). Python package versions are
+  pinned in `environment/requirements.txt`, R package versions in
+  `environment/renv.lock`.
+- **Hardware.** A standard desktop computer. No GPU or other non-standard
+  hardware is needed. The demo peaks at about 0.5 GB of memory. The full P4 run
+  on the real data takes about 3–4 minutes.
+- **Windows paths.** Output paths encode the analysis configuration and are long.
+  Keep the repository and project directories short (under about 80 characters)
+  to stay inside the 260-character path limit.
+
+## Installation
+
+The Quick start above installs everything. The Python environment has three parts:
+
+| File | Role |
+|---|---|
+| `environment/environment.yml` | Python 3.8.12 and the MKL stack, then `requirements.txt` |
+| `environment/requirements.txt` | the packages the pipelines import, pinned to the versions used for the published results; dependencies held to published versions through the snapshot, used as a constraints file |
+| `environment/requirements-nodeps.txt` | brainstat, installed with `--no-deps`, because its declared dependencies cannot be resolved together with the published pins (see the file) |
+| `environment/requirements-lock.txt` | full snapshot of the original environment, for provenance only; it has conflicting pins and is not installable as a whole |
+
+brainspace is the released 0.1.20. The analysis originally ran on a locally
+modified copy. The modifications it depends on are in `lib/brainspace_ext.py`,
+and the released package reproduces the published P4 outputs byte for byte (see
+`pipelines/p4_semantic_axis/README.md`).
+
+**Install time.** On a desktop with a broadband connection, the Python
+environment took about 4 minutes from scratch: `conda env create` 3.7 min, the
+`--no-deps` step and the NLTK data 10 s. The R library took about 4 minutes into
+an empty library: installing renv 24 s, `renv::restore` 3.6 min. renv installs
+33 packages: 28 are built from source, because the locked versions have no R 4.1
+binaries (so Windows needs Rtools40), and 5 install as binaries. The other 6 locked
+packages ship with R. Both were measured on Windows 11, Intel Core i9-10900,
+96 GB RAM, on a broadband connection.
+
+If your machine has packages in the per-user site-packages directory (`pip
+install --user`), set `PYTHONNOUSERSITE=1` before creating and using the
+environment. Otherwise pip treats those packages as already installed and they
+can shadow the pinned versions.
+
+## Demo
+
+The per-subject inputs cannot be shared, so `demo/` provides a simulated dataset
+(58 subjects after quality control, with a planted group difference) that runs the
+P4 semantic-axis analysis end to end with the unmodified pipeline:
+
+```bash
+python demo/make_demo_data.py
+ASC_PROJECT_ROOT=$PWD/demo/project python pipelines/p4_semantic_axis/07_pca.py \
+    --skip-surface-figures --out-root demo/output
+```
+
+Expected output: 29 TD and 29 ASC subjects after quality control and 29
+FDR-significant parcels, 28 of which are among the 30 planted ones. Expected run
+time is about 10 s to generate the data and about 30 s for the analysis. See
+[`demo/README.md`](demo/README.md) for the output files, a check against the
+planted effect, and PowerShell syntax.
 
 ## The manuscript configuration
 

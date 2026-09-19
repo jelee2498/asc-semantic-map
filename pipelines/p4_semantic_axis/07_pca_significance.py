@@ -35,14 +35,17 @@ from scipy.stats import zscore, ttest_rel
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'lib'))
 from project_config import PROJECT, TEMPLATES, fig_dir  # noqa: E402
+# PCA exactly as the (locally modified) brainspace used for the published
+# analysis computed it; see lib/brainspace_ext.py.
+import brainspace_ext  # noqa: E402
 
 # Neuroimaging
-from brainspace.gradient import GradientMaps
 from neuroCombat import neuroCombat
 from nilearn.glm import regression
 
 # NLP
 from nltk.corpus import wordnet31 as wn
+from nltk.corpus.reader.wordnet import WordNetError
 
 # Utilities
 from tqdm import tqdm
@@ -598,6 +601,16 @@ def add_superordinate_weights(
     """
     print('* Add superordinate weights')
 
+    # Fail loudly if the WordNet 3.1 corpus is missing (see 07_pca.py).
+    try:
+        wn.ensure_loaded()
+    except LookupError as exc:
+        raise LookupError(
+            "The NLTK WordNet 3.1 corpus is required for the superordinate step. "
+            "Install it with: python -c \"import nltk; nltk.download('wordnet'); "
+            "nltk.download('wordnet31')\""
+        ) from exc
+
     weight_wordnet_list = []
 
     for weight in weight_list:
@@ -613,8 +626,8 @@ def add_superordinate_weights(
                     if hyper_name in label_list:
                         weight_df.loc[label] += weight_df.loc[hyper_name]
 
-            except Exception:
-                # Silently skip labels without hypernyms
+            except WordNetError:
+                # Skip labels that are not WordNet synsets (none of the 85 are)
                 continue
 
         weight_wordnet_list.append(weight_df.values)
@@ -710,18 +723,17 @@ def compute_stimulus_explained_variance(
         stim_list.append(reg_dm_df.loc[label_list][frame_list].values)
 
     # Perform PCA on stimulus matrices
-    emb_stim = GradientMaps(
-        n_components=min(stim_list[0].shape),
-        approach='pca',
-        random_state=0
-    )
+    n_components = min(stim_list[0].shape)
 
     # Normalize within labels before PCA
     stim_z_list = [zscore(stim.T, axis=0) for stim in stim_list]
-    emb_stim.fit(stim_z_list, sparsity=0)
+    stim_lambdas = [
+        brainspace_ext.pca_embedding(stim_z, n_components, random_state=0)[1]
+        for stim_z in stim_z_list
+    ]
 
     # Calculate explained variance ratio
-    stim_exp_var_list = [lambdas / np.sum(lambdas) for lambdas in emb_stim.lambdas_]
+    stim_exp_var_list = [lambdas / np.sum(lambdas) for lambdas in stim_lambdas]
     stim_exp_var_list = np.array(stim_exp_var_list)
 
     return stim_exp_var_list
@@ -755,15 +767,14 @@ def compute_semantic_explained_variance(
         weight_z_list = [zscore(weight, axis=0) for weight in weight_list_td + weight_list_asd]
 
     # Perform PCA
-    emb_sem = GradientMaps(
-        n_components=min(weight_z_list[0].shape),
-        approach='pca',
-        random_state=0
-    )
-    emb_sem.fit(weight_z_list, sparsity=0)
+    n_components = min(weight_z_list[0].shape)
+    sem_lambdas = [
+        brainspace_ext.pca_embedding(weight_z, n_components, random_state=0)[1]
+        for weight_z in weight_z_list
+    ]
 
     # Calculate explained variance ratio
-    sem_exp_var_list = [lambdas / np.sum(lambdas) for lambdas in emb_sem.lambdas_]
+    sem_exp_var_list = [lambdas / np.sum(lambdas) for lambdas in sem_lambdas]
     sem_exp_var_list = np.array(sem_exp_var_list)
 
     return sem_exp_var_list

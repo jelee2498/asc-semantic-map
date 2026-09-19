@@ -1,0 +1,13 @@
+# Installed WITHOUT dependency resolution, after requirements.txt:
+#
+#   pip install --no-deps -r environment/requirements-nodeps.txt
+#
+# brainstat is used only for brainstat.stats.SLM / brainstat.stats.terms (the
+# GLMs in P4, P5 and P6).  Its declared dependencies cannot be installed together
+# with the published pins: nimare (NiMARE 0.2.2 needs pandas>=2.0; the analysis
+# used pandas 1.5.3), pybids (needs a newer bids-validator) and templateflow
+# (needs pybids).  None of them is imported by brainstat.stats.  The two modules
+# brainstat.stats does import beyond requirements.txt's core, h5py and trimesh,
+# are pinned in requirements.txt.
+
+brainstat==0.4.2
