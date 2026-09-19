@@ -1,0 +1,72 @@
+cff-version: 1.2.0
+message: >-
+  If you use this code, please cite it using the metadata below,
+  together with the accompanying article.
+type: software
+title: >-
+  asc-semantic-map: code for "How do children with autism perceive the
+  external world? Cortex-wide mapping of visual semantic representation"
+abstract: >-
+  Analysis code and derived data for Lee et al. The pipelines map
+  whole-brain semantic representations from movie-watching fMRI in
+  children with and without autism (Healthy Brain Network) using a
+  gaze-informed encoding model, and reproduce the semantic-axis,
+  representational-dimensionality, symptom-prediction, normative-modelling,
+  structural-equation-modelling and subtyping analyses from the encoding
+  weights onwards.
+version: 1.0.0
+license: MIT
+repository-code: "https://github.com/jelee2498/asc-semantic-map"
+keywords:
+  - autism
+  - fMRI
+  - naturalistic viewing
+  - semantic representation
+  - encoding model
+  - eye tracking
+  - normative modelling
+authors:
+  - given-names: Jong-Eun
+    family-names: Lee
+    affiliation: "Center for Neuroscience Imaging Research, Institute for Basic Science"
+  - given-names: Wookyung
+    family-names: Lee
+    affiliation: "Department of MetaBioHealth, Sungkyunkwan University"
+  - given-names: Sunghun
+    family-names: Kim
+    affiliation: "Department of Brain and Cognitive Engineering, Korea University"
+  - given-names: Won Mok
+    family-names: Shim
+    affiliation: "Center for Neuroscience Imaging Research, Institute for Basic Science"
+  - given-names: Min-Suk
+    family-names: Kang
+    affiliation: "Center for Neuroscience Imaging Research, Institute for Basic Science"
+  - given-names: So Hyun
+    family-names: Kim
+    affiliation: "School of Psychology, Korea University"
+  - given-names: Elizabeth
+    family-names: Jefferies
+    affiliation: "Department of Psychology, University of York"
+  - given-names: Laurent
+    family-names: Mottron
+    affiliation: "Psychiatry and Addictology Department, University of Montreal"
+  - given-names: Boris C.
+    family-names: Bernhardt
+    affiliation: "Department of Neurology and Neurosurgery, McGill University"
+  - given-names: Xiaoqian
+    family-names: Chai
+    affiliation: "Department of Neurology and Neurosurgery, McGill University"
+  - given-names: Hyunjin
+    family-names: Park
+    affiliation: "Department of Electrical and Computer Engineering, Sungkyunkwan University"
+    email: hyunjinp@skku.edu
+  - given-names: Michael P.
+    family-names: Milham
+    affiliation: "Child Mind Institute"
+  - given-names: Adriana
+    family-names: Di Martino
+    affiliation: "Autism Center, Child Mind Institute"
+  - given-names: Seok-Jun
+    family-names: Hong
+    affiliation: "Center for Neuroscience Imaging Research, Institute for Basic Science"
+    email: hongseokjun@skku.edu
